@@ -52,8 +52,8 @@ public class Movement : MonoBehaviour
         wallJumpLefting = JumpTimer();
 
 
-        RaycastHit2D landright = Physics2D.Raycast(transform.position - new Vector3(-.04f, .05f, 0), new Vector2(0, velocity[1]), Mathf.Abs(velocity[1]));
-        RaycastHit2D landleft = Physics2D.Raycast(transform.position - new Vector3(.04f, .05f, 0), new Vector2(0, velocity[1]), Mathf.Abs(velocity[1]));
+        RaycastHit2D landright = Physics2D.Raycast(transform.position - new Vector3(-2.5f, 2f, 0), new Vector2(0, velocity[1]), Mathf.Abs(velocity[1]));
+        RaycastHit2D landleft = Physics2D.Raycast(transform.position - new Vector3(2.5f, 2f, 0), new Vector2(0, velocity[1]), Mathf.Abs(velocity[1]));
         // landing
         if (landleft.collider ? landleft.collider.tag == "Ground" : false || landright.collider ? landright.collider.tag == "Ground" : false)
         {
@@ -92,9 +92,9 @@ public class Movement : MonoBehaviour
 
 
         //hitting wall with left side
-        RaycastHit2D wallHitLeftBottom = Physics2D.Raycast(transform.position - new Vector3(.05f, -.04f, 0), new Vector2(-1, 0), -(velocity[0]));
+        RaycastHit2D wallHitLeftBottom = Physics2D.Raycast(transform.position - new Vector3(3f, -5f, 0), new Vector2(-1, 0), -(velocity[0]));
        
-        RaycastHit2D wallHitLeftTop = Physics2D.Raycast(transform.position - new Vector3(.05f, .04f, 0), new Vector2(-1, 0), -(velocity[0]));
+        RaycastHit2D wallHitLeftTop = Physics2D.Raycast(transform.position - new Vector3(3f, 5f, 0), new Vector2(-1, 0), -(velocity[0]));
         
         
         if (wallHitLeftTop.collider ? wallHitLeftTop.collider.tag == "Ground" : false || wallHitLeftBottom.collider ? wallHitLeftBottom.collider.tag == "Ground" : false)
@@ -126,8 +126,8 @@ public class Movement : MonoBehaviour
 
 
         //hitting wall with right side
-        RaycastHit2D wallHitRightBottom = Physics2D.Raycast(transform.position + new Vector3(.05f, -.04f, 0), new Vector2(1, 0), ( velocity[0]));
-        RaycastHit2D wallHitRightTop = Physics2D.Raycast(transform.position + new Vector3(.05f, .04f, 0), new Vector2(1, 0), (velocity[0]));
+        RaycastHit2D wallHitRightBottom = Physics2D.Raycast(transform.position + new Vector3(3, 5, 0), new Vector2(1, 0), ( velocity[0]));
+        RaycastHit2D wallHitRightTop = Physics2D.Raycast(transform.position + new Vector3(3f, 5, 0), new Vector2(1, 0), (velocity[0]));
         if (wallHitRightTop.collider ? wallHitRightTop.collider.tag == "Ground" : false || wallHitRightBottom.collider ? wallHitRightBottom.collider.tag == "Ground" : false)
         {
 
@@ -216,11 +216,7 @@ public class Movement : MonoBehaviour
         {
             jumpUp();
         }
-        else if (Input.GetKey(KeyCode.W))
-        {
-            landright = Physics2D.Raycast(transform.position - new Vector3(-.04f, .05f, 0), new Vector2(0, velocity[1]), -velocity[1]);
-            landleft = Physics2D.Raycast(transform.position - new Vector3(.04f, .05f, 0), new Vector2(0, velocity[1]), -velocity[1]);
-        }
+
         if (!Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.A))
         {
             velocity[0] = 0;
@@ -263,8 +259,8 @@ public class Movement : MonoBehaviour
 
 
 
-        velocity[0] = Mathf.Clamp(velocity[0], -.05f, .05f);
-        velocity[1] = Mathf.Clamp(velocity[1], -.25f, .25f);
+        velocity[0] = Mathf.Clamp(velocity[0], -1, 1);
+        velocity[1] = Mathf.Clamp(velocity[1], -.5f, .5f);
         
         transform.position += velocity;
         Debug.Log(velocity[0]);
