@@ -260,7 +260,7 @@ public class Movement : MonoBehaviour
 
 
         velocity[0] = Mathf.Clamp(velocity[0], -.5f, .5f);
-        velocity[1] = Mathf.Clamp(velocity[1], -.5f, .5f);
+        velocity[1] = Mathf.Clamp(velocity[1], -10, 10);
         
         transform.position += velocity;
         Debug.Log(velocity[0]);
