@@ -28,6 +28,14 @@ public class Movement : MonoBehaviour
     Vector3 wallJumpRight = new Vector3(-4, 4, 0);
     int jumpCount = 2;
     bool wallJumpDown = true;
+    public bool wallJumpLefting = false;
+    bool wallJumpRighting = false;
+    float timer = 0;
+
+    private void Awake()
+    {
+        GameManager.Instance.MyCharacter = this;
+    }
 
 
     // Use this for initialization
@@ -35,12 +43,15 @@ public class Movement : MonoBehaviour
     {
         playerC = GetComponent<BoxCollider2D>();
         groundC = GameObject.Find("Ground").GetComponent<BoxCollider2D>();
-        GameManager.Instance.MyCharacter = this;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        wallJumpLefting = JumpTimer();
+
+
         RaycastHit2D landright = Physics2D.Raycast(transform.position - new Vector3(-.04f, .05f, 0), new Vector2(0, velocity[1]), Mathf.Abs(velocity[1]));
         RaycastHit2D landleft = Physics2D.Raycast(transform.position - new Vector3(.04f, .05f, 0), new Vector2(0, velocity[1]), Mathf.Abs(velocity[1]));
         // landing
@@ -66,8 +77,7 @@ public class Movement : MonoBehaviour
                 Debug.Log("on ground");
                 onGround = true;
             
-
-
+             
         }
 
         else
@@ -82,16 +92,25 @@ public class Movement : MonoBehaviour
 
 
         //hitting wall with left side
-        RaycastHit2D wallHitLeftBottom = Physics2D.Raycast(transform.position - new Vector3(.05f, -.04f, 0), new Vector2(-1, 0), -velocity[0]);
-        RaycastHit2D wallHitLeftTop = Physics2D.Raycast(transform.position - new Vector3(.05f, .04f, 0), new Vector2(-1, 0), -velocity[0]);
-        if (wallHitLeftTop.collider == true || wallHitLeftBottom.collider == true)
+        RaycastHit2D wallHitLeftBottom = Physics2D.Raycast(transform.position - new Vector3(.05f, -.04f, 0), new Vector2(-1, 0), -(velocity[0]));
+       
+        RaycastHit2D wallHitLeftTop = Physics2D.Raycast(transform.position - new Vector3(.05f, .04f, 0), new Vector2(-1, 0), -(velocity[0]));
+        
+        
+        if (wallHitLeftTop.collider ? wallHitLeftTop.collider.tag == "Ground" : false || wallHitLeftBottom.collider ? wallHitLeftBottom.collider.tag == "Ground" : false)
         {
             
             placeholder = transform.position;
-            if (wallHitLeftTop.collider.tag == "Ground")
-                placeholder[0] -= wallHitLeftTop.distance;
-            else if (wallHitLeftBottom.collider.tag == "Ground")
+
+            if (wallHitLeftBottom.collider)
+            {
                 placeholder[0] -= wallHitLeftBottom.distance;
+
+            }
+            else if (wallHitLeftTop.collider)
+                placeholder[0] -= wallHitLeftTop.distance;
+
+
             transform.position = placeholder;
             velocity[0] = 0;
             wallTouchLeft = true;
@@ -104,35 +123,29 @@ public class Movement : MonoBehaviour
             wallTouchLeft = false;
         }
 
-        
-        
+
+
         //hitting wall with right side
-
-        RaycastHit2D wallHitRightTop = Physics2D.Raycast(transform.position - new Vector3(.05f, .04f, 0), new Vector2(-1, 0), -velocity[0]);
-        if (wallHitRightTop.collider == true)
+        RaycastHit2D wallHitRightBottom = Physics2D.Raycast(transform.position + new Vector3(.05f, -.04f, 0), new Vector2(1, 0), ( velocity[0]));
+        RaycastHit2D wallHitRightTop = Physics2D.Raycast(transform.position + new Vector3(.05f, .04f, 0), new Vector2(1, 0), (velocity[0]));
+        if (wallHitRightTop.collider ? wallHitRightTop.collider.tag == "Ground" : false || wallHitRightBottom.collider ? wallHitRightBottom.collider.tag == "Ground" : false)
         {
+
             placeholder = transform.position;
-            placeholder[0] -= wallHitRightTop.distance;
-            transform.position = placeholder;
-            velocity[0] = 0;
-            wallTouchLeft = true;
 
-            Debug.Log("touching wall");
+            if (wallHitRightBottom.collider)
+            {
+                placeholder[0] += wallHitRightBottom.distance;
 
-        }
-        else
-        {
-            wallTouchLeft = false;
-        }
-        RaycastHit2D wallHitRightBottom = Physics2D.Raycast(transform.position + new Vector3(.05f, -.04f, 0), new Vector2(1, 0), velocity[0]);
-        if (wallHitRightBottom.collider == true)
-        {
-            placeholder = transform.position;
-            placeholder[0] += wallHitRightBottom.distance;
+            }
+            else if (wallHitRightTop.collider)
+                placeholder[0] += wallHitRightTop.distance;
+
+
             transform.position = placeholder;
             velocity[0] = 0;
             wallTouchRight = true;
-            
+
             Debug.Log("touching wall");
 
         }
@@ -140,6 +153,7 @@ public class Movement : MonoBehaviour
         {
             wallTouchRight = false;
         }
+
         //enemy collision
         RaycastHit2D enemyHitRightTop = Physics2D.Raycast(transform.position + new Vector3(.05f, .04f, 0), new Vector2(1, 0), velocity[0]);
         if (enemyHitRightTop.collider)
@@ -151,33 +165,33 @@ public class Movement : MonoBehaviour
         //walljumps
         if (wallTouchLeft && Input.GetKeyDown(KeyCode.W) && !onGround && wallJumpDown)
         {
-            
-            if (wallJumpDown)
-            {
-                SoundManager.Instance.PlayOneShot(SoundEffect.wallJump);
-                wallJumpDown = false;
-                
-                velocity = wallJumpLeft;
-                
-                
-                wallJumpDown = true;
-            }
+            wallJumpLefting = true; 
 
-    
             
-
+            
+            
+           
+            SoundManager.Instance.PlayOneShot(SoundEffect.wallJump);
         }
         if (wallTouchRight && Input.GetKeyDown(KeyCode.W) && !onGround && wallJumpDown)
         {
             SoundManager.Instance.PlayOneShot(SoundEffect.wallJump);
-            wallJumpDown = false;
+           
 
             velocity = wallJumpRight;
 
              
-            wallJumpDown = true;
-        }
+            
 
+        }
+        if (wallTouchRight && Input.GetKey(KeyCode.A))
+        {
+            moveleft();
+        }
+        if (wallTouchLeft && Input.GetKey(KeyCode.D))
+        {
+            moveright();
+        }
         if (!wallTouchLeft)
         {
             if (Input.GetKey(KeyCode.A))
@@ -236,17 +250,29 @@ public class Movement : MonoBehaviour
             Shoot();
         }
 
+        if (wallJumpLefting)
+        {
+            timer += Time.deltaTime;
+            if (timer > 1f)
+            {
+                wallJumpLefting = false;
+                timer = 0;
+
+            }
+        }
 
 
 
-        velocity[0] = Mathf.Clamp(velocity[0], -.25f, .25f);
+        velocity[0] = Mathf.Clamp(velocity[0], -.05f, .05f);
         velocity[1] = Mathf.Clamp(velocity[1], -.25f, .25f);
+        
         transform.position += velocity;
         Debug.Log(velocity[0]);
         
 
 
     }
+
     void moveright()
     {
         velocity += speed * Vector3.right * Time.deltaTime;
@@ -280,6 +306,15 @@ public class Movement : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab);
         bullet.transform.position = transform.position;
         bullet.GetComponent<Bullets>().look2 = look;
+    }
+    bool JumpTimer()
+    {
+        
+        timer += Time.deltaTime;
+        if (timer < 0)
+            return true;
+        else
+            return false;
     }
 
 
