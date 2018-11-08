@@ -155,10 +155,10 @@ public class Movement : MonoBehaviour
         }
 
         //enemy collision
-        RaycastHit2D enemyHitRightTop = Physics2D.Raycast(transform.position + new Vector3(.05f, .04f, 0), new Vector2(1, 0), velocity[0]);
-        if (enemyHitRightTop.collider)
+
+        if (wallHitRightTop.collider ? wallHitRightTop.collider.tag == "Enemy" : false || wallHitRightBottom ? wallHitRightBottom.collider.tag == "Enemy" : false || wallHitLeftBottom ? wallHitLeftBottom.collider.tag == "Enemy" : false || wallHitLeftTop ? wallHitLeftTop.collider.tag == "Enemy" : false)
         {
-            if(enemyHitRightTop.collider.tag == "Enemy")
+           
             Destroy(gameObject);
         }
 
@@ -259,7 +259,7 @@ public class Movement : MonoBehaviour
 
 
 
-        velocity[0] = Mathf.Clamp(velocity[0], -1, 1);
+        velocity[0] = Mathf.Clamp(velocity[0], -.5f, .5f);
         velocity[1] = Mathf.Clamp(velocity[1], -.5f, .5f);
         
         transform.position += velocity;
