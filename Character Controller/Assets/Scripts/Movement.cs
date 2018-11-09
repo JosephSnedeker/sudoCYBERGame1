@@ -21,7 +21,8 @@ public class Movement : MonoBehaviour
     bool wallTouchLeft = false;
     bool wallTouchRight = false;
     public float look = 1;
-    
+    [SerializeField]
+    public Animator animator;
     [SerializeField]
     Vector3 wallJumpLeft = new Vector3 (4, 4, 0);
     [SerializeField]
@@ -264,6 +265,18 @@ public class Movement : MonoBehaviour
         
         transform.position += velocity;
         Debug.Log(velocity[0]);
+        if (velocity[0] > -.1 && velocity[0] < .1)
+        {
+            animator.SetBool("is still", true);
+            Debug.Log("is still");
+        }
+        else
+        {
+            animator.SetBool("is still", false);
+            Debug.Log("is not still");
+        }
+        animator.SetFloat("velocity", velocity[0]);
+        
         
 
 
