@@ -223,6 +223,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07ce757315d1d1e4c8e1d22d0bafec70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slimeParticleVelocity: {x: 0, y: 0, z: 0}
+  slimeParticles: {fileID: 1786890858836780, guid: 29297b7642b22e14c9f321741b55ed57,
+    type: 2}
   speed: 100
   jump: 50
   gravity: 2.5
