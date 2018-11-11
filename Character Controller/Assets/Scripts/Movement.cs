@@ -1,10 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    Vector3 velocity = new Vector3(0, 0, 0);
+    GameObject slimeParticle;
+    System.Random rand = new System.Random();
+    Vector3 slimeParticleVelocity = new Vector3();
+    public Vector3 velocity = new Vector3(0, 0, 0);
+    [SerializeField]
+    GameObject slimeParticles;
+    public bool ismoveleft = false;
+    public bool ismoveright = false;
     [SerializeField]
     float speed = 4;
     [SerializeField]
@@ -16,7 +24,7 @@ public class Movement : MonoBehaviour
     GameObject bulletPrefab;
     Collider2D playerC;
     Collider2D groundC;
-    bool onGround;
+    public bool onGround;
     Vector3 placeholder;
     bool wallTouchLeft = false;
     bool wallTouchRight = false;
@@ -50,6 +58,8 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ismoveleft = false;
+        ismoveright = false;
         wallJumpLefting = JumpTimer();
 
 
@@ -232,6 +242,7 @@ public class Movement : MonoBehaviour
             velocity[0] = 0;
             moveright();
         }
+        
         if (Input.GetKeyUp(KeyCode.A) && Input.GetKey(KeyCode.D))
         {
             velocity[0] = 0;
@@ -257,8 +268,8 @@ public class Movement : MonoBehaviour
 
             }
         }
-
-
+        Debug.Log(velocity[1]);
+        animator.SetFloat("jump", velocity[1]);
 
         velocity[0] = Mathf.Clamp(velocity[0], -.5f, .5f);
         velocity[1] = Mathf.Clamp(velocity[1], -10, 10);
@@ -276,8 +287,44 @@ public class Movement : MonoBehaviour
             Debug.Log("is not still");
         }
         animator.SetFloat("velocity", velocity[0]);
-        
-        
+        if (onGround && Mathf.Abs(velocity[0]) > 0 && ismoveright && !ismoveleft)
+        {
+            
+            
+            slimeParticle = Instantiate(slimeParticles);
+            
+            
+            slimeParticle.transform.position = transform.position;
+            placeholder = slimeParticle.transform.position;
+            placeholder[1] -= 2;
+            placeholder[0] -= 2;
+            slimeParticle.transform.position = placeholder;
+            
+            
+        }
+        else if (onGround && Mathf.Abs(velocity[0]) > 0 && !ismoveright && ismoveleft)
+        {
+            slimeParticle = Instantiate(slimeParticles);
+
+
+            slimeParticle.transform.position = transform.position;
+            placeholder = slimeParticle.transform.position;
+            placeholder[1] -= 2;
+            placeholder[0] += 2;
+            slimeParticle.transform.position = placeholder;
+        }
+        Debug.Log("is move left =" + ismoveleft);
+        Debug.Log("ismoveright = " + ismoveright);
+
+        if (onGround)
+        {
+            animator.SetBool("onGround", true);
+        }
+        else
+        {
+            animator.SetBool("onGround", false);
+        }
+
 
 
     }
@@ -286,11 +333,13 @@ public class Movement : MonoBehaviour
     {
         velocity += speed * Vector3.right * Time.deltaTime;
         look = 1;
+        ismoveright = true;
     }
     void moveleft()
     {
         velocity += speed * Vector3.left * Time.deltaTime;
         look = -1;
+        ismoveleft = true;
     }
     void jumpUp()
     {
