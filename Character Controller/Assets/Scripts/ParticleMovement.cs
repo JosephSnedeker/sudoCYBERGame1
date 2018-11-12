@@ -8,6 +8,7 @@ public class ParticleMovement : MonoBehaviour {
 
     System.Random rand = new System.Random();
     float n = 5f;
+    float timer = .1f;
     Vector3 random3 = new Vector3();
     
     // Use this for initialization
@@ -27,5 +28,11 @@ public class ParticleMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         transform.position += random3;
+
+        timer -= 1 * Time.deltaTime;
+        if (timer < 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
