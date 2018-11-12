@@ -8,7 +8,7 @@ public class Bullets : MonoBehaviour {
     [SerializeField]
     GameObject bulletPrefab;
     public float look2 = 0;
-    float timer = 5;
+    float timer = 3;
     [SerializeField]
     Vector3 velocity = new Vector3(4, 0, 0);
     // Use this for initialization
