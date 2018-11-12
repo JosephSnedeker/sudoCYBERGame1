@@ -63,8 +63,8 @@ public class Movement : MonoBehaviour
         wallJumpLefting = JumpTimer();
 
 
-        RaycastHit2D landright = Physics2D.Raycast(transform.position - new Vector3(-2.5f, 2f, 0), new Vector2(0, velocity[1]), Mathf.Abs(velocity[1]));
-        RaycastHit2D landleft = Physics2D.Raycast(transform.position - new Vector3(2.5f, 2f, 0), new Vector2(0, velocity[1]), Mathf.Abs(velocity[1]));
+        RaycastHit2D landright = Physics2D.Raycast(transform.position - new Vector3(0, 2f, 0), new Vector2(0, velocity[1]), Mathf.Abs(velocity[1]));
+        RaycastHit2D landleft = Physics2D.Raycast(transform.position - new Vector3(0, 2f, 0), new Vector2(0, velocity[1]), Mathf.Abs(velocity[1]));
         // landing
         if (landleft.collider ? landleft.collider.tag == "Ground" : false || landright.collider ? landright.collider.tag == "Ground" : false)
         {
@@ -103,9 +103,9 @@ public class Movement : MonoBehaviour
 
 
         //hitting wall with left side
-        RaycastHit2D wallHitLeftBottom = Physics2D.Raycast(transform.position - new Vector3(3f, -5f, 0), new Vector2(-1, 0), -(velocity[0]));
+        RaycastHit2D wallHitLeftBottom = Physics2D.Raycast(transform.position - new Vector3(3f, 5f, 0), new Vector2(-1, 0), -velocity[0]);
        
-        RaycastHit2D wallHitLeftTop = Physics2D.Raycast(transform.position - new Vector3(3f, 5f, 0), new Vector2(-1, 0), -(velocity[0]));
+        RaycastHit2D wallHitLeftTop = Physics2D.Raycast(transform.position - new Vector3(3f, -5f, 0), new Vector2(-1, 0), -velocity[0]);
         
         
         if (wallHitLeftTop.collider ? wallHitLeftTop.collider.tag == "Ground" : false || wallHitLeftBottom.collider ? wallHitLeftBottom.collider.tag == "Ground" : false)
@@ -133,12 +133,20 @@ public class Movement : MonoBehaviour
         {
             wallTouchLeft = false;
         }
+        if (wallTouchLeft && onGround)
+        {
+            velocity[0] = 0;
+        }
+        if(wallTouchRight && onGround)
+        {
+            velocity[0] = 0;
+        }
 
 
 
         //hitting wall with right side
-        RaycastHit2D wallHitRightBottom = Physics2D.Raycast(transform.position + new Vector3(3, 5, 0), new Vector2(1, 0), ( velocity[0]));
-        RaycastHit2D wallHitRightTop = Physics2D.Raycast(transform.position + new Vector3(3f, 5, 0), new Vector2(1, 0), (velocity[0]));
+        RaycastHit2D wallHitRightBottom = Physics2D.Raycast(transform.position + new Vector3(3, -5, 0), new Vector2(1, 0), ( velocity[0]));
+        RaycastHit2D wallHitRightTop = Physics2D.Raycast(transform.position + new Vector3(3, 5, 0), new Vector2(1, 0), (velocity[0]));
         if (wallHitRightTop.collider ? wallHitRightTop.collider.tag == "Ground" : false || wallHitRightBottom.collider ? wallHitRightBottom.collider.tag == "Ground" : false)
         {
 
@@ -174,27 +182,12 @@ public class Movement : MonoBehaviour
         }
 
         //walljumps
-        if (wallTouchLeft && Input.GetKeyDown(KeyCode.W) && !onGround && wallJumpDown)
-        {
-            wallJumpLefting = true; 
-
-            
-            
-            
-           
-            SoundManager.Instance.PlayOneShot(SoundEffect.wallJump);
-        }
-        if (wallTouchRight && Input.GetKeyDown(KeyCode.W) && !onGround && wallJumpDown)
-        {
-            SoundManager.Instance.PlayOneShot(SoundEffect.wallJump);
-           
-
-            velocity = wallJumpRight;
+       
 
              
             
 
-        }
+        
         if (wallTouchRight && Input.GetKey(KeyCode.A))
         {
             moveleft();
@@ -258,16 +251,7 @@ public class Movement : MonoBehaviour
             Shoot();
         }
 
-        if (wallJumpLefting)
-        {
-            timer += Time.deltaTime;
-            if (timer > 1f)
-            {
-                wallJumpLefting = false;
-                timer = 0;
-
-            }
-        }
+       
         Debug.Log(velocity[1]);
         animator.SetFloat("jump", velocity[1]);
 
@@ -296,8 +280,8 @@ public class Movement : MonoBehaviour
             
             slimeParticle.transform.position = transform.position;
             placeholder = slimeParticle.transform.position;
-            placeholder[1] -= 2;
-            placeholder[0] -= 2;
+            placeholder[1] -= 1.8f;
+            placeholder[0] -= 1.45f;
             slimeParticle.transform.position = placeholder;
             
             
@@ -309,8 +293,8 @@ public class Movement : MonoBehaviour
 
             slimeParticle.transform.position = transform.position;
             placeholder = slimeParticle.transform.position;
-            placeholder[1] -= 2;
-            placeholder[0] += 2;
+            placeholder[1] -= 1.8f;
+            placeholder[0] += 1.45f;
             slimeParticle.transform.position = placeholder;
         }
         Debug.Log("is move left =" + ismoveleft);
@@ -347,12 +331,12 @@ public class Movement : MonoBehaviour
         {
             velocity[1] = jump * Time.deltaTime;
             
-            if (!wallTouchLeft && !wallTouchRight)
-            {                
-                jumpCount--;
-                SoundManager.Instance.PlayOneShot(SoundEffect.Jump);
+            
+                         
+            jumpCount--;
+            SoundManager.Instance.PlayOneShot(SoundEffect.Jump);
 
-            }
+            
             
         }        
         
