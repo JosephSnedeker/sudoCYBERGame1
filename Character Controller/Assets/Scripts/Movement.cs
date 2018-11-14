@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    //varibles used for movement
     GameObject slimeParticle;
     System.Random rand = new System.Random();
     Vector3 slimeParticleVelocity = new Vector3();
